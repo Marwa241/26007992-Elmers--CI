@@ -1,0 +1,500 @@
+% =====================================================================
+%  RAPPORT À COMPLÉTER
+%  Examen individuel (Partie B) : projet de science des données
+%  appliqué à la finance. S7 FIN et CI, cours BD & DS, ENCG-2026.
+%
+%  Mode d'emploi
+%  1. Remplacez chaque \acompleter{...} (texte rouge) et chaque
+%     \acel{...} (cellule rouge) par votre contenu. Rien ne doit rester
+%     en rouge dans la version remise. Après chaque compilation, le
+%     journal indique le nombre d'éléments qui restent à compléter.
+%  2. Compilez avec pdfLaTeX (sur Overleaf : compilateur pdfLaTeX).
+%     Compilez deux fois pour mettre à jour les renvois et les citations.
+%  3. Les figures sont cherchées dans ../figures/ puis dans figures/.
+%     Tant qu'une figure manque, un cadre la remplace : le document
+%     compile toujours. Sur Overleaf, créez un dossier figures/ et
+%     téléversez-y vos images.
+%  4. Citations : chaque source de la liste « Références et citations »
+%     a une clé (par exemple lie1). Citez-la dans le texte avec \cite{lie1}.
+%  5. Longueur : celle fixée par l'énoncé. Les lignes qui commencent
+%     par % sont des aides : vous pouvez les supprimer.
+%  6. Caractères spéciaux : écrivez \_ pour un tiret bas (par exemple
+%     \texttt{n\_estimators}), \% pour un pourcentage, \& pour &.
+%  7. Page de garde : les logos de l'Université Hassan 1er
+%     (logo_universite_hassan1.png) et de l'ENCG Settat
+%     (logo_encg_settat.png) sont fournis : laissez-les à côté de
+%     rapport.tex (ou dans figures/).
+%  8. Votre photo (format identité) : placez-la à côté de rapport.tex,
+%     nommée photo_etudiant.jpg ou photo_etudiant.png. Elle remplace
+%     automatiquement la photo modèle (photo_modele.png), qui s'affiche
+%     en attendant avec la mention « Remplacez par votre photo ».
+%  9. Lien GitHub : remplacez l'adresse dans la commande \lienDepot
+%     ci-dessous (une seule fois). Il s'affiche sur la page de garde et
+%     en annexe, en rouge tant qu'il n'est pas modifié.
+% 10. Remettez rapport.tex, rapport.pdf, les deux logos et votre photo
+%     dans le dossier rapport/ de votre dépôt CodeApogee-Nom-Groupe.
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[french]{babel}
+\frenchsetup{StandardLists=true}
+\usepackage[margin=1.8cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[labelsep=colon]{caption}
+\PassOptionsToPackage{hyphens}{url}
+\usepackage[hidelinks]{hyperref}
+
+% ========== Mise en page et commandes du gabarit (ne pas modifier) ==========
+\addto\captionsfrench{%
+  \renewcommand{\tablename}{Tableau}%
+  \renewcommand{\refname}{Références et citations}}
+\setlist{itemsep=1pt,topsep=3pt}
+\setlength{\emergencystretch}{2em}
+\makeatletter
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+  {1.2ex \@plus 0.4ex \@minus 0.2ex}{-1em}{\normalfont\normalsize\bfseries}}
+\makeatother
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\newcounter{nbacompleter}
+\DeclareRobustCommand{\acompleter}[1]{%
+  \stepcounter{nbacompleter}\textcolor{red}{\textit{[À compléter : #1]}}}
+\DeclareRobustCommand{\acel}[1]{%
+  \stepcounter{nbacompleter}\textcolor{red}{\textit{#1}}}
+% \insererfigure{fichier}{légende}{étiquette}
+\newcommand{\insererfigure}[3]{%
+  \begin{figure}[htbp]
+    \centering
+    \IfFileExists{../figures/#1}{\includegraphics[width=0.62\linewidth]{../figures/#1}}{%
+      \IfFileExists{figures/#1}{\includegraphics[width=0.62\linewidth]{figures/#1}}{%
+        \fbox{\parbox[c][2.4cm][c]{0.6\linewidth}{\centering\small
+          Figure à insérer : \texttt{figures/\detokenize{#1}}}}}}
+    \caption{#2}
+    \label{#3}
+  \end{figure}}
+% ---------- VOTRE LIEN GITHUB : remplacez l'adresse ci-dessous ----------
+\newcommand{\lienDepot}{https://github.com/Marwa241/26007992-Elmers--CI.git}
+% -------------------------------------------------------------------------
+\newcommand{\lienParDefaut}{https://github.com/identifiant/CodeApogee-Nom-Groupe}
+\newcommand{\afficherlien}{%
+  \ifx\lienDepot\lienParDefaut
+    \stepcounter{nbacompleter}\textcolor{red}{\expandafter\url\expandafter{\lienDepot}}%
+  \else
+    \expandafter\url\expandafter{\lienDepot}%
+  \fi}
+% Photo de l'étudiant(e) : photo_etudiant.jpg ou photo_etudiant.png.
+% Tant qu'elle manque, la photo modèle (photo_modele.png) s'affiche avec la
+% mention « Remplacez par votre photo », et compte comme élément à compléter.
+\newcommand{\photo}[1]{\includegraphics[width=3.5cm,height=4.5cm,keepaspectratio]{#1}}
+\newcommand{\insererphoto}{%
+  \IfFileExists{photo_etudiant.jpg}{\photo{photo_etudiant.jpg}}{%
+    \IfFileExists{photo_etudiant.png}{\photo{photo_etudiant.png}}{%
+    \IfFileExists{photo_modele.png}{\stepcounter{nbacompleter}\photo{photo_modele.png}\\[3pt]%
+      {\scriptsize\textcolor{red}{\textit{Remplacez par votre photo}}}}{%
+      \fbox{\parbox[c][4.5cm][c]{3.5cm}{\centering\small\textcolor{red}{\textit{Photo de\\ l'étudiant(e)}}\\[4pt]
+        \scriptsize\texttt{photo\_etudiant.jpg}}}}}}}
+% Logos de la page de garde : déposez les deux fichiers à côté de rapport.tex
+% (ou dans figures/). Modifiez les noms ci-dessous si vos fichiers s'appellent autrement.
+\newcommand{\fichierlogouniv}{logo_universite_hassan1.png}
+\newcommand{\fichierlogo}{logo_encg_settat.png}
+% \chercherimage{fichier}{options}{largeur du cadre}{hauteur du cadre}{texte du cadre}
+\newcommand{\chercherimage}[5]{%
+  \IfFileExists{#1}{\includegraphics[#2]{#1}}{%
+    \IfFileExists{figures/#1}{\includegraphics[#2]{figures/#1}}{%
+      \IfFileExists{../figures/#1}{\includegraphics[#2]{../figures/#1}}{%
+        \fbox{\parbox[c][#4][c]{#3}{\centering\small #5\\[2pt]
+          \tiny\texttt{\detokenize\expandafter{#1}}}}}}}}
+\newcommand{\insererlogouniv}{\chercherimage{\fichierlogouniv}{height=1.9cm}{5.2cm}{1.9cm}{Logo de l'Université Hassan 1\ier}}
+\newcommand{\insererlogo}{\chercherimage{\fichierlogo}{height=2.5cm}{2.5cm}{2.5cm}{Logo de l'ENCG Settat}}
+\AtEndDocument{\ifnum\value{nbacompleter}>0
+  \typeout{ATTENTION : il reste \arabic{nbacompleter} élément(s) à compléter.}\fi}
+% ===========================================================================
+
+\begin{document}
+
+% =====================================================================
+%  PAGE DE GARDE
+% =====================================================================
+\begin{titlepage}
+  \centering
+  \noindent
+  \begin{minipage}[c]{0.5\linewidth}\raggedright\insererlogouniv\end{minipage}%
+  \begin{minipage}[c]{0.5\linewidth}\raggedleft\insererlogo\end{minipage}\par
+  \vspace{0.9cm}
+  {\large Université Hassan 1\ier{} de Settat}\par
+  \vspace{0.2cm}
+  {\Large\bfseries École Nationale de Commerce et de Gestion de Settat}\par
+  \vspace{0.1cm}
+  {\large ENCG Settat}\par
+  \vspace{1.6cm}
+  \rule{\linewidth}{0.8pt}\par
+  \vspace{0.5cm}
+  {\large Cours BD \& DS : examen individuel (Partie B)}\par
+  \vspace{0.3cm}
+  {\Large Rapport de projet de science des données appliquée au commerce international}\par
+  \vspace{0.7cm}
+  {\LARGE\bfseries CI02 : Prédiction de la valeur unitaire des importations de sucre et de céréales}\par
+  \vspace{0.5cm}
+  \rule{\linewidth}{0.8pt}\par
+  \vfill
+  \begin{minipage}[c]{0.66\linewidth}
+  \large
+  \begin{tabular}{@{}ll@{}}
+    Réalisé par          & Elmers Marwa \\[3pt]
+    Code Apogée          & 26007992 \\[3pt]
+    Groupe et filière    & S7 CI \\[3pt]
+    Algorithme principal & Forêt aléatoire (Random Forest) \\[3pt]
+    Enseignant        & {A. Larhlimi} \\[3pt]
+  \end{tabular}
+  \end{minipage}\hfill
+  \begin{minipage}[c]{0.3\linewidth}
+    \centering\insererphoto
+  \end{minipage}\par
+  \vspace{0.8cm}
+  {\large\textbf{Dépôt GitHub :} \afficherlien}\par
+  \vfill
+  {\large Année universitaire 2026-2027}\par
+  \vspace{0.2cm}
+  Remis le 26 novembre 2026
+\end{titlepage}
+
+% =====================================================================
+\section{Introduction}
+\label{sec:introduction}
+% =====================================================================
+\paragraph{Contexte.} Le sucre (chapitre 17 du Système Harmonisé, SH) et les céréales (chapitre 10) sont des produits de base échangés en grands volumes. Pour un importateur, un négociant ou une administration douanière, savoir si le prix payé est cohérent avec celui de flux comparables aide à négocier, à contrôler les factures et à préparer un budget d'achat. Le résultat intéresse un acheteur ou un contrôleur de prix, qui doit décider s'il faut renégocier ou vérifier une offre.
+
+\paragraph{Problématique.} Peut-on prédire la valeur unitaire (USD par kg) d'un flux d'importation de sucre ou de céréales en 2025 d'après le pays importateur, le pays fournisseur, le produit (code SH6), le mode de transport, le régime douanier et le volume ?
+
+\paragraph{Objectif mesurable.} Métrique principale : le $R^2$ sur le jeu de test, calculé sur le logarithme de la valeur unitaire. Référence naïve : la médiane de la cible par code SH6. Jeu de test : 20\,\% des groupes importateur--fournisseur--produit, jamais vus à l'entraînement. Seuils de réussite fixés avant la lecture du test : (i) $R^2 \geq 0{,}50$ ; (ii) réduction de l'erreur absolue moyenne (MAE, en log) d'au moins 30\,\% par rapport à la référence.
+
+\paragraph{Nature du problème.} Il s'agit d'une régression supervisée : la cible, le logarithme de la valeur unitaire, est une grandeur continue connue pour chaque flux observé.
+
+\paragraph{Organisation du rapport.} La section~\ref{sec:etat} présente l'état de l'art et la section~\ref{sec:travaux} les travaux liés. Les sections~\ref{sec:donnees} à~\ref{sec:protocole} décrivent les données, leur exploration, leur préparation, l'algorithme retenu et le protocole expérimental. La section~\ref{sec:resultats} présente les résultats, discutés en section~\ref{sec:discussion}, avant la conclusion (section~\ref{sec:conclusion}).
+
+% =====================================================================
+\section{État de l'art}
+\label{sec:etat}
+% =====================================================================
+La valeur unitaire, rapport entre la valeur et la quantité d'un flux, est l'indicateur de prix le plus accessible dans les statistiques douanières. Les travaux d'économie internationale l'utilisent pour comparer les exportateurs à l'intérieur de catégories de produits fines : à produit donné, les pays plus riches vendent à des prix unitaires plus élevés \cite{hk}. Dans la pratique des douanes, le prix déclaré est comparé à des bases de prix de référence, souvent mal adaptées au pays ou à la qualité du produit, et l'apprentissage automatique est proposé pour prédire une valeur à partir de l'historique des importations \cite{wco}. Parmi les méthodes supervisées, les forêts aléatoires \cite{breiman}, disponibles dans scikit-learn \cite{sklearn}, combinent un grand nombre d'arbres et captent des interactions entre variables catégorielles sans les spécifier. Le tableau~\ref{tab:etat} résume ces approches.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Panorama des approches pour prédire un prix à l'importation}
+  \label{tab:etat}
+  \small
+  \begin{tabular}{@{}P{3cm} P{4.3cm} P{3.5cm} P{3.5cm} l@{}}
+    \toprule
+    Approche & Principe & Atouts & Limites & Réf. \\
+    \midrule
+    Référence naïve : médiane par produit ou base de prix de référence & Attribuer à chaque flux le prix habituel du même produit & Simple, données disponibles partout & Ignore le pays, le fournisseur, le transport et le volume & \cite{wco} \\
+    Classique : régression sur des caractéristiques des pays et des produits & Relier la valeur unitaire à des variables explicatives par des effets additifs & Résultats lisibles, interprétation économique & Interactions importateur--fournisseur--produit difficiles à spécifier & \cite{hk} \\
+    Apprentissage automatique : forêt aléatoire & Moyenne de nombreux arbres entraînés sur des échantillons bootstrap & Non linéarités et interactions, robuste aux valeurs extrêmes, importance des variables & Peu transparente, lourde en mémoire, extrêmes mal prédits & \cite{breiman,sklearn} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% =====================================================================
+\section{Travaux liés}
+\label{sec:travaux}
+% =====================================================================
+\begin{table}[htbp]
+  \centering
+  \caption{Travaux liés}
+  \label{tab:travaux}
+  \small
+  \begin{tabular}{@{}P{2.4cm} P{2.8cm} P{2.8cm} P{3.4cm} P{3.8cm}@{}}
+    \toprule
+    Travail & Données & Méthode & Résultat principal & Différence avec ce travail \\
+    \midrule
+    Sentongo, 2025 \cite{lie1} & Plus de 70\,000 déclarations d'importation de l'administration fiscale ougandaise, 2020--2024 & Forêt aléatoire, XGBoost et réseau de neurones pour prédire le prix unitaire, comparés à la moyenne utilisée par les douanes & $R^2 = 0{,}997$ pour la forêt ; MAE de 560 UGX contre 124\,798 UGX pour la méthode par moyenne & Ici : statistiques publiques UN Comtrade, 104 pays importateurs, valeur déclarée exclue des variables explicatives, découpage par groupes \\
+    Ramli, 2025 \cite{lie2} & 100\,000 enregistrements douaniers d'exportations de substances appauvrissant la couche d'ozone & K-means, Isolation Forest et IQR sur le prix par kg, avec un score de priorité & 1\,351 prix aberrants et 1\,288 envois prioritaires repérés & Ici : supervisé, on prédit le prix attendu d'un flux et on mesure le gain sur une référence \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{Positionnement.} Ce travail reprend de \cite{lie1} l'idée d'utiliser une forêt aléatoire pour prédire un prix à l'importation et la comparaison à une règle simple, et de \cite{lie2} le prix par kg comme grandeur de contrôle. Il apporte une évaluation sur des combinaisons importateur--fournisseur--produit jamais vues, des variables qui ne contiennent pas la valeur déclarée, et un test chiffré de deux seuils fixés à l'avance.
+
+% =====================================================================
+\section{Jeu de données}
+\label{sec:donnees}
+% =====================================================================
+\begin{itemize}
+  \item \textbf{Nom et source :} UN Comtrade, base Tariffline (importations), Division de statistique des Nations unies \cite{donnees}, \url{https://comtradeplus.un.org}.
+  \item \textbf{Date d'extraction :} 19/11/2026.
+  \item \textbf{Licence ou conditions d'utilisation :} conditions d'utilisation du portail UN Comtrade ; aucune licence n'est précisée dans le fichier téléchargé.
+  \item \textbf{Taille :} 100\,000 observations et 8 variables utilisées (tableau~\ref{tab:dictionnaire}), pour 104 pays importateurs, 232 partenaires et 1\,037 codes tarifaires, année 2025, fréquence annuelle.
+  \item \textbf{Unité d'observation :} une ligne douanière, c'est-à-dire un flux d'importation d'un pays déclarant, venant d'un partenaire, pour un code tarifaire national de 6 à 12 chiffres, avec un mode de transport et un régime douanier.
+  \item \textbf{Variable cible :} $y = \ln(\text{primaryValue}/\text{netWgt})$, logarithme de la valeur unitaire en USD par kg.
+  \item \textbf{Adéquation :} le fichier donne, pour chaque flux, la valeur, le poids et les caractéristiques (pays, produit, transport) que la problématique veut relier au prix ; plus de 100 importateurs offrent de la diversité.
+  \item \textbf{Limites :} (1) une seule année, donc aucune dimension temporelle ; (2) la valeur unitaire est une moyenne par ligne douanière, sensible aux erreurs de déclaration du poids ; (3) la description des produits est vide, les codes SH doivent être interprétés ; (4) le fichier atteint exactement la limite d'export de 100\,000 lignes, l'échantillon est donc probablement tronqué.
+\end{itemize}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Dictionnaire des principales variables}
+  \label{tab:dictionnaire}
+  \small
+  \begin{tabular}{@{}l P{5.6cm} l l l c@{}}
+    \toprule
+    Variable & Description & Type & Unité & Rôle & Manquants (\%) \\
+    \midrule
+    \texttt{reporterISO} & Pays importateur (ISO3) & texte & -- & explicative & 0 \\
+    \texttt{partnerISO} & Pays fournisseur (ISO3) & texte & -- & explicative & 0 \\
+    \texttt{cmdCode} & Code tarifaire national, dont on tire SH4 et SH6 & texte & code SH & explicative & 0 \\
+    \texttt{motDesc} & Mode de transport (40\,\% de « non précisé ») & texte & -- & explicative & 0 \\
+    \texttt{customsDesc} & Régime douanier & texte & -- & explicative & 63,7 \\
+    \texttt{netWgt} & Poids net du flux (utilisé en log) & réel & kg & explicative & 1,2 \\
+    \texttt{primaryValue} & Valeur du flux & réel & USD & base de la cible & 0 \\
+    \texttt{lw} (créée) & $\ln(\text{netWgt})$, log du poids net & réel & -- & explicative & 0 \\
+    \texttt{y} (créée) & $\ln(\text{primaryValue}/\text{netWgt})$, log de la valeur unitaire & réel & log(USD/kg) & cible & 0 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% =====================================================================
+\section{Exploration}
+\label{sec:exploration}
+% =====================================================================
+\paragraph{Statistiques descriptives.} Après nettoyage, les valeurs unitaires vont de 0,14 à 448~USD/kg, bornes qui correspondent aux centiles 0,5\,\% et 99,5\,\%. Les codes tarifaires ont de 6 à 12 chiffres, la plupart sur 8 (50,6\,\%) ou 6 chiffres (34,1\,\%). Dans l'échantillon, la Chine est le premier importateur (environ 10,5 milliards de dollars), devant le Japon (7,7) et l'Italie (7,2) (figure~\ref{fig:2}).
+
+\paragraph{Qualité des données.} Le poids net est manquant ou nul pour 7,3\,\% des lignes et la valeur est nulle pour 2,4\,\%. Neuf lignes sur dix sont exprimées en kg ; les autres unités (litres, unités, kWh) ne sont pas comparables et sont écartées. Ces lignes sont supprimées parce qu'on ne peut pas calculer de valeur unitaire sans poids ou sans valeur strictement positifs. Les 0,5\,\% de valeurs unitaires les plus basses et les plus hautes sont retirés comme erreurs probables de déclaration ; ce choix est discuté en section~\ref{sec:discussion}.
+
+\insererfigure{fig1_distribution.png}{Distribution du log de la valeur unitaire (log USD/kg) par chapitre SH, 2025}{fig:1}
+
+\noindent\textbf{Lecture de la figure~\ref{fig:1}.} Les deux chapitres ont des distributions différentes. Les céréales se concentrent sur des prix bas, avec un maximum autour de 0,5 et un pic étroit près de $-1{,}4$ ; les sucres et sucreries sont décalés vers des valeurs plus élevées (maximum vers 1,8) et s'étalent jusqu'à 6, avec une queue vers les produits transformés. Le chapitre explique une partie de la variance, mais pas tout.
+
+\insererfigure{fig2_importateurs.png}{Dix premiers importateurs dans l'échantillon (milliards USD)}{fig:2}
+
+\noindent\textbf{Lecture de la figure~\ref{fig:2}.} Quelques importateurs concentrent l'essentiel de la valeur échantillonnée. C'est en partie réel (grands marchés) et en partie un effet de la troncature à 100\,000 lignes : l'échantillon ne représente pas le commerce mondial complet.
+
+\insererfigure{fig3_sh4.png}{Dispersion du log de la valeur unitaire par position SH4 (8 plus fréquentes)}{fig:3}
+
+\noindent\textbf{Lecture de la figure~\ref{fig:3}.} Le produit structure fortement le prix : les médianes vont d'environ $-0{,}6$ pour le blé (1001) à plus de 2 pour les sucreries (1704). Mais la dispersion à l'intérieur d'une même position reste large, par exemple pour le maïs (1005), dont les valeurs couvrent presque 8 unités de log. C'est là que l'importateur, le fournisseur, le transport et le volume peuvent apporter de l'information, ce qui justifie un modèle non linéaire.
+
+% =====================================================================
+\section{Préparation}
+\label{sec:preparation}
+% =====================================================================
+\begin{itemize}
+  \item \textbf{Nettoyage :} on garde les codes d'au moins 6 chiffres (les codes plus courts sont des agrégats ambigus), l'unité kg seule, les poids et valeurs strictement positifs, puis on retire les 0,5\,\% de valeurs unitaires les plus basses et les plus hautes (bornes 0,14 à 448~USD/kg). Il reste 89\,372 lignes sur 100\,000 (89,4\,\%). Les valeurs manquantes de \texttt{motDesc} et \texttt{customsDesc} sont remplacées par une modalité « NA ».
+  \item \textbf{Variables créées :} \texttt{hs4}, \texttt{hs6} (niveaux de la nomenclature), \texttt{lw} et la cible \texttt{y} ; formules dans le tableau~\ref{tab:dictionnaire}. Le logarithme symétrise la distribution de la cible et traduit les écarts en pourcentage.
+  \item \textbf{Encodage et mise à l'échelle :} les variables catégorielles (importateur, fournisseur, SH4, SH6, transport, régime) sont codées par un \texttt{OrdinalEncoder} placé dans le \texttt{Pipeline} ; une modalité jamais vue à l'entraînement reçoit le code $-1$. Aucune mise à l'échelle n'est nécessaire pour une forêt, dont les coupures ne dépendent pas de l'échelle des variables.
+\end{itemize}
+
+\paragraph{Prévention des fuites.} Une même combinaison importateur--fournisseur--produit apparaît sur plusieurs lignes (transports et régimes différents). Un découpage aléatoire simple placerait des lignes quasi identiques dans l'apprentissage et le test : ce serait une fuite. Le découpage est donc fait par groupe.
+\begin{itemize}
+  \item[$\boxtimes$] Transformations ajustées sur l'apprentissage seulement, dans un \texttt{Pipeline} (encodage) ; la référence naïve est aussi calculée sur l'apprentissage.
+  \item[$\boxtimes$] Découpage par groupes importateur--fournisseur--produit, sans groupe commun entre apprentissage et test ; pas de découpage chronologique, car il n'y a qu'une année.
+  \item[$\boxtimes$] Variables construites sans information du futur : non applicable ici, il n'y a ni date exploitable ni horizon de prévision.
+  \item[$\square$] Aucune variable ne contient la cible, même indirectement. Point de vigilance : le log du poids net entre dans le calcul de la cible ($y = \ln(\text{valeur}) - \texttt{lw}$) ; il ne contient pas la valeur, mais il est lié à la cible par construction (sections~\ref{sec:resultats} et~\ref{sec:discussion}).
+  \item[$\boxtimes$] Jeu de test utilisé une seule fois pour l'évaluation finale ; le réglage s'appuie sur la validation croisée de l'apprentissage seul.
+\end{itemize}
+Le notebook vérifie l'absence de fuite entre apprentissage et test par un contrôle explicite : l'intersection des groupes est vide (0 groupe commun) et il affiche le nombre de lignes et de groupes de chaque ensemble (tableau~\ref{tab:decoupage}).
+
+% =====================================================================
+\section{Algorithme}
+\label{sec:algorithme}
+% =====================================================================
+\paragraph{Choix.} L'algorithme retenu est la forêt aléatoire de régression \cite{breiman}. Les variables sont surtout catégorielles à nombreuses modalités (pays, codes SH) et en interaction : le prix d'un produit dépend du couple importateur--fournisseur. Une régression linéaire suppose des effets additifs et exigerait un encodage très large (1\,037 codes tarifaires, 104 importateurs, 232 partenaires) ; un arbre unique est instable et sur-apprend. La forêt moyenne de nombreux arbres décorrélés, ce qui réduit la variance, capte les interactions sans les spécifier et reste robuste aux valeurs extrêmes. Elle fournit aussi une mesure d'importance des variables. Le gradient boosting est une alternative plausible, qui n'a pas été testée ici (section~\ref{sec:discussion}).
+
+\paragraph{Principe.} On tire de nombreux échantillons bootstrap de l'apprentissage et on entraîne un arbre sur chacun. À chaque coupure, l'arbre ne teste qu'un sous-ensemble aléatoire de variables, ce qui décorrèle les arbres. La prédiction est la moyenne des prédictions des arbres. L'implémentation est celle de scikit-learn \cite{sklearn} (\texttt{RandomForestRegressor}), avec 100 arbres pendant le réglage, 300 pour le modèle final, et la graine 42.
+
+\paragraph{Formule essentielle.}
+\begin{equation}
+  \hat{y}(x) = \frac{1}{B}\sum_{b=1}^{B} T_b(x)
+  \label{eq:principale}
+\end{equation}
+où $\hat{y}(x)$ est la prédiction du log de la valeur unitaire pour la ligne $x$, $B$ le nombre d'arbres, $T_b$ le $b$-ième arbre (entraîné sur un échantillon bootstrap, avec un sous-ensemble aléatoire de variables à chaque coupure) et $x$ le vecteur des variables explicatives. Chaque coupure minimise la variance interne des deux nœuds fils, $\sum_{i\in G}(y_i-\bar{y}_G)^2$, où $G$ est l'ensemble des observations d'un nœud, $y_i$ la cible de l'observation $i$ et $\bar{y}_G$ la moyenne de la cible dans $G$.
+
+\paragraph{Paramètres appris.} Les variables et les seuils de coupure de chaque arbre, et la valeur moyenne de la cible dans chaque feuille.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Hyperparamètres étudiés}
+  \label{tab:hyper}
+  \small
+  \begin{tabular}{@{}l P{6.4cm} l l@{}}
+    \toprule
+    Hyperparamètre & Rôle et effet attendu & Valeurs testées & Valeur retenue \\
+    \midrule
+    \texttt{min\_samples\_leaf} & Taille minimale d'une feuille : trop petite, le modèle sur-apprend ; trop grande, il lisse trop & 1, 3, 10 & 3 \\
+    \texttt{max\_features} & Part des variables testées à chaque coupure : plus elle est faible, plus les arbres sont décorrélés & 0,5 ; 1,0 & 0,5 \\
+    \texttt{n\_estimators} & Nombre d'arbres de la forêt & 100 (réglage), 300 (final) & 300 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% =====================================================================
+\section{Protocole expérimental}
+\label{sec:protocole}
+% =====================================================================
+\begin{table}[htbp]
+  \centering
+  \caption{Découpage des données}
+  \label{tab:decoupage}
+  \small
+  \begin{tabular}{@{}l l r@{}}
+    \toprule
+    Ensemble & Période ou proportion & Observations (groupes) \\
+    \midrule
+    Apprentissage & 80\,\% des groupes, année 2025 & 71\,672 (29\,568) \\
+    Validation & validation croisée par groupes, 3 plis, sur l'apprentissage & -- \\
+    Test & 20\,\% des groupes, année 2025 & 17\,700 (7\,392) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{itemize}
+  \item \textbf{Référence naïve :} médiane de la cible par code SH6 sur l'apprentissage, avec repli sur le SH4 puis sur la médiane globale pour un code absent. Elle représente ce qu'un acheteur ferait en se fondant sur le seul prix habituel du produit.
+  \item \textbf{Validation :} validation croisée par groupes (\texttt{GroupKFold}, 3 plis) sur l'apprentissage uniquement ; 6 configurations comparées (annexe~\ref{ann:complements}). Le test n'est utilisé qu'une fois. Le notebook suit le gabarit fourni par le cours \cite{support}.
+  \item \textbf{Métrique principale :} $R^2$, part de la variance du log de la valeur unitaire expliquée par le modèle (sans unité, à maximiser).
+  \item \textbf{Métriques secondaires :} MAE et RMSE, en log. Une MAE de 0,5 en log correspond à un écart d'environ 65\,\% sur le prix.
+  \item \textbf{Graine aléatoire :} 42.
+\end{itemize}
+
+% =====================================================================
+\section{Résultats}
+\label{sec:resultats}
+% =====================================================================
+\begin{table}[htbp]
+  \centering
+  \caption{Comparaison de la référence naïve et du modèle}
+  \label{tab:resultats}
+  \small
+  \begin{tabular}{@{}l c c c c@{}}
+    \toprule
+    Modèle & $R^2$ validation & $R^2$ test & MAE test (log) & RMSE test (log) \\
+    \midrule
+    Référence : médiane par SH6 & 0,238 & 0,243 & 0,889 & 1,219 \\
+    Forêt aléatoire & 0,627 & 0,639 & 0,611 & 0,842 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\insererfigure{fig4_pred_vs_obs.png}{Valeur unitaire prédite et observée (log), jeu de test}{fig:4}
+
+\paragraph{Lecture des résultats.} Le $R^2$ de test est de 0,639 pour la forêt contre 0,243 pour la référence (tableau~\ref{tab:resultats}). La MAE passe de 0,889 à 0,611, soit une baisse de 31,3\,\%, et la RMSE de 1,219 à 0,842. Dans la figure~\ref{fig:4}, le nuage suit la diagonale, mais s'élargit aux extrémités : les prix observés les plus bas sont parfois surestimés, les plus élevés (au-delà de 5) sous-estimés.
+
+\insererfigure{fig5_importance.png}{Importance des variables par permutation (baisse de $R^2$ quand la variable est mélangée)}{fig:5}
+
+\noindent\textbf{Lecture de la figure~\ref{fig:5}.} Le volume (log du poids) domine nettement (0,61), devant le code SH6 (0,16), le SH4 (0,13) et l'importateur (0,10) ; le transport (environ 0,06), le fournisseur (0,03) et le régime douanier (0,02) pèsent peu.
+
+\paragraph{Analyse des erreurs.} L'erreur est plus faible pour les céréales (MAE 0,55) que pour les sucres (0,65), plus hétérogènes. Parmi les six importateurs les plus fréquents du test, elle va de 0,50 (Estonie) à 0,67 (France) (tableau~\ref{tab:illustration}). Les prix extrêmes sont les moins bien prédits, comme attendu pour des moyennes d'arbres.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Erreur du modèle sur le jeu de test (groupes non utilisés pour l'apprentissage)}
+  \label{tab:illustration}
+  \small
+  \begin{tabular}{@{}l l l P{7cm}@{}}
+    \toprule
+    Sous-groupe & MAE (log) & Écart typique & Commentaire \\
+    \midrule
+    Céréales (SH 10) & 0,55 & environ 73\,\% & Produits plus homogènes, erreur la plus faible des deux chapitres \\
+    Sucres et sucreries (SH 17) & 0,65 & environ 92\,\% & Gamme de produits très étendue, de brut aux sucreries \\
+    Estonie & 0,50 & environ 65\,\% & Erreur la plus faible parmi les six importateurs les plus fréquents \\
+    France & 0,67 & environ 95\,\% & Erreur la plus forte parmi les six importateurs les plus fréquents \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% =====================================================================
+\section{Discussion des résultats}
+\label{sec:discussion}
+% =====================================================================
+\paragraph{Réponse à l'objectif.} L'objectif fixé dans l'introduction est atteint, car le $R^2$ de test (0,639) dépasse le seuil de 0,50 et la MAE baisse de 31,3\,\% par rapport à la référence, au-dessus du seuil de 30\,\%. La marge sur le second seuil est faible : il faut le lire avec prudence.
+
+\paragraph{Interprétation.} La forêt fait mieux que la référence parce qu'elle combine le produit avec l'importateur, le fournisseur, le transport et le volume, que la médiane par SH6 ignore. Le volume domine l'importance des variables, mais il faut le lire avec prudence : les petites lignes ont des valeurs unitaires très variables et souvent plus élevées (produits conditionnés, échantillons, erreurs de déclaration), et le poids figure aussi au dénominateur de la cible ; une erreur de déclaration du poids crée donc mécaniquement un lien entre le volume et la valeur unitaire. Le volume peut ainsi capter un effet de déclaration autant qu'un effet commercial. Ces résultats décrivent des associations, pas des relations de cause à effet. Enfin, une MAE de 0,611 en log correspond à un écart typique d'environ 84\,\% entre prix prédit et prix observé : le modèle donne un ordre de grandeur utile pour repérer un prix très éloigné de la norme, pas un prix précis.
+
+\paragraph{Surapprentissage et généralisation.} Le $R^2$ de validation (0,627) et celui du test (0,639) sont très proches : pas de signe de surapprentissage. Le test porte sur des groupes jamais vus, ce qui est plus exigeant qu'un découpage aléatoire. La sensibilité au choix de la graine n'a pas été mesurée.
+
+\paragraph{Comparaison avec les travaux liés.} Notre $R^2$ (0,639) est bien inférieur à celui de \cite{lie1} (0,997), mais les deux ne sont pas comparables : cette étude travaille sur des déclarations d'un seul pays, avec des variables liées à la valeur déclarée (valeur CIF, valeur par unité) que nous excluons, et un découpage différent du nôtre. Comme dans \cite{lie1}, la forêt fait nettement mieux qu'une règle par moyenne. Nos résultats vont aussi dans le sens de \cite{lie2} : le prix par kg varie fortement à l'intérieur d'un même code SH (figure~\ref{fig:3}), ce qui justifie de le comparer à un prix attendu plutôt qu'à une valeur unique.
+
+\paragraph{Limites et biais.} (1) L'export plafonné à 100\,000 lignes peut sur-représenter certains pays et en omettre d'autres : les conclusions ne valent que pour cet échantillon. (2) Une seule année et une valeur unitaire moyenne : le modèle ne voit ni les cours mondiaux, ni la saisonnalité, ni la qualité du produit, ni les conditions de livraison (Incoterms), ni les droits de douane. (3) Les erreurs de déclaration du poids se répercutent directement sur la cible. (4) Les bornes de 0,5\,\% et 99,5\,\% ont été calculées sur l'ensemble des données avant le découpage : c'est une fuite d'information mineure. (5) L'effet propre du volume n'a pas été isolé : le modèle n'a pas été réentraîné sans la variable de poids.
+
+\paragraph{Pistes d'amélioration.} (1) Télécharger plusieurs années, par importateur, pour obtenir un jeu complet, puis tester un découpage temporel (apprentissage sur 2022--2024, test sur 2025). (2) Réentraîner le modèle sans la variable de poids pour mesurer ce qu'il reste de capacité prédictive, puis ajouter des variables externes (distance entre pays, indices de prix mondiaux du sucre et des céréales) et comparer avec un gradient boosting.
+
+% =====================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+% =====================================================================
+Oui, la valeur unitaire des importations de sucre et de céréales est en partie prévisible : le modèle atteint un $R^2$ de 0,639 sur des combinaisons importateur--fournisseur--produit jamais vues, contre 0,243 pour la médiane par code SH6, et réduit l'erreur absolue moyenne de 31,3\,\%. Les deux objectifs sont atteints, le second de peu. Le travail apporte un repère de négociation et de contrôle des prix pour un acheteur, avec ses limites : un échantillon tronqué d'une seule année, un écart typique d'environ 84\,\% et un effet du volume qui n'est pas purement commercial. La suite logique est d'étendre l'étude à plusieurs années et de mesurer l'apport réel de chaque variable, en particulier le poids.
+
+% =====================================================================
+%  RÉFÉRENCES ET CITATIONS
+% =====================================================================
+\begin{thebibliography}{9}
+  \bibitem{donnees} United Nations Statistics Division, « UN Comtrade : base Tariffline, importations 2025, chapitres SH 10 et 17 », \url{https://comtradeplus.un.org}, consultée le 19/11/2026.
+  \bibitem{hk} D.~Hummels et P.~J.~Klenow, « The Variety and Quality of a Nation's Exports », \textit{American Economic Review}, vol.~95, no~3, p.~704-723, 2005.
+  \bibitem{wco} M.~Squirrell, « How Machine Learning Can Automate the Determination of the Valuation of Goods », \textit{WCO News}, 27~février 2020, \url{https://mag.wcoomd.org/?p=7514}.
+  \bibitem{breiman} L.~Breiman, « Random Forests », \textit{Machine Learning}, vol.~45, no~1, p.~5-32, 2001.
+  \bibitem{lie1} P.~Sentongo, « A Machine Learning Approach for Accurate Valuation of Imports in Uganda », mémoire de master, Uganda Christian University, septembre 2025, \url{https://ucudir.ucu.ac.ug/bitstreams/ebb038ae-ba59-43e9-a0a3-e76bfe17e325/download}.
+  \bibitem{lie2} M.~S.~Bin Ramli, « Pattern Recognition of Ozone-Depleting Substance Exports in Global Trade Data », arXiv:2512.07864, novembre 2025, \url{https://arxiv.org/abs/2512.07864}.
+  \bibitem{sklearn} F.~Pedregosa \textit{et al.}, « Scikit-learn: Machine Learning in Python », \textit{Journal of Machine Learning Research}, vol.~12, p.~2825-2830, 2011.
+  \bibitem{support} Support du cours BD \& DS, notebook \texttt{Tp\_ML.ipynb}, ENCG-2026.
+\end{thebibliography}
+
+% =====================================================================
+%  ANNEXES
+% =====================================================================
+\appendix
+
+\section{Reproduction}
+\label{ann:reproduction}
+Version corrigée : étiquette \texttt{remise-finale} du dépôt \afficherlien.
+\begin{enumerate}
+  \item Cloner le dépôt : \texttt{git clone} suivi du lien ci-dessus.
+  \item Installer les dépendances : \texttt{pip install -r requirements.txt}.
+  \item Exécuter \texttt{notebooks/CI02\_26007992.ipynb} avec « Redémarrer et tout exécuter ».
+\end{enumerate}
+Environnement : Python 3.12, numpy 2.5.4, pandas 3.0.6, scikit-learn 1.9.1, matplotlib 3.11.2 ; graine aléatoire 42.
+
+\section{Tableaux et figures complémentaires}
+\label{ann:complements}
+Le tableau~\ref{tab:grille} détaille les 6 configurations comparées par validation croisée par groupes sur l'apprentissage. La configuration retenue est la première ligne.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Grille de réglage de la forêt aléatoire (validation croisée par groupes, 3 plis)}
+  \label{tab:grille}
+  \small
+  \begin{tabular}{@{}c c c c@{}}
+    \toprule
+    \texttt{min\_samples\_leaf} & \texttt{max\_features} & $R^2$ validation & MAE validation \\
+    \midrule
+    3 & 0,5 & 0,627 & 0,625 \\
+    3 & 1,0 & 0,620 & 0,630 \\
+    1 & 0,5 & 0,620 & 0,630 \\
+    10 & 1,0 & 0,616 & 0,634 \\
+    10 & 0,5 & 0,616 & 0,637 \\
+    1 & 1,0 & 0,611 & 0,636 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Déclaration des outils d'IA}
+\label{ann:ia}
+\begin{table}[htbp]
+  \centering
+  \caption{Ressources et outils d'IA utilisés}
+  \label{tab:ia}
+  \small
+  \begin{tabular}{@{}P{3cm} P{4.8cm} P{3.3cm} P{4.4cm}@{}}
+    \toprule
+    Outil ou ressource & Usage précis & Parties concernées & Vérification effectuée \\
+    \midrule
+    Claude (Anthropic), 26/11/2026 & Aide à la rédaction et à la mise en forme du rapport à partir du notebook et des figures ; recherche de deux travaux liés et de trois références & Toutes les sections du rapport & Chiffres recoupés avec les sorties du notebook et les figures ; références retrouvées en ligne (adresse indiquée) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\end{document}
